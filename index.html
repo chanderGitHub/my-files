@@ -3,255 +3,238 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Files - chanderGitHub</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <title>My Files</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Boxicons for icons -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f7fa;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #eef2f3, #8e9eab);
       margin: 0;
       padding: 0;
       color: #333;
     }
 
     header {
-      background: linear-gradient(135deg, #0078d7, #00a1ff);
-      color: white;
-      padding: 20px 40px;
       text-align: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      padding: 30px 20px;
+      background-color: #ffffffcc;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 0 0 20px 20px;
     }
 
     header h1 {
-      margin: 0;
-      font-size: 28px;
-      letter-spacing: 0.5px;
+      margin: 0 0 10px 0;
+      font-size: 2rem;
+      color: #2c3e50;
     }
 
-    .toolbar {
+    .controls {
       display: flex;
-      justify-content: center;
-      gap: 15px;
       flex-wrap: wrap;
-      background-color: #fff;
+      justify-content: center;
+      gap: 10px;
       padding: 10px 20px;
-      border-bottom: 1px solid #e2e8f0;
     }
 
-    input[type="text"] {
-      width: 260px;
-      padding: 8px 12px;
-      border-radius: 20px;
-      border: 1px solid #ccc;
-      outline: none;
-      font-size: 15px;
-    }
-
-    select {
-      padding: 8px 12px;
+    input[type="text"], select {
+      padding: 10px;
       border-radius: 8px;
       border: 1px solid #ccc;
-      font-size: 15px;
+      font-size: 1rem;
+      width: 250px;
     }
 
-    ul {
-      list-style-type: none;
-      margin: 0;
-      padding: 20px 40px;
+    .file-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 40px;
     }
 
-    li {
+    .file-card {
       background: #fff;
-      border-radius: 12px;
-      margin: 10px 0;
-      padding: 12px 18px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
-    }
-
-    li:hover {
-      transform: scale(1.01);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    }
-
-    .left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .left i {
-      font-size: 20px;
-      width: 24px;
+      border-radius: 16px;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
       text-align: center;
+      padding: 25px;
+      transition: transform 0.2s, box-shadow 0.3s;
     }
 
-    .meta {
-      color: gray;
-      font-size: 13px;
+    .file-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
     }
 
-    .download {
-      font-size: 18px;
+    .file-card i {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    .file-card a {
       text-decoration: none;
-      color: #0078d7;
-      margin-left: 10px;
+      color: #2c3e50;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 8px;
+      word-break: break-word;
     }
 
-    .download:hover {
-      color: #004a99;
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
     }
 
-    @media (max-width: 600px) {
-      ul {
-        padding: 10px 20px;
-      }
-      li {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .meta {
-        margin-top: 6px;
-      }
+    button {
+      background-color: #0078d4;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-size: 0.9rem;
     }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+      color: #777;
+    }
+
+    /* Icons colors */
+    .pdf i { color: #e74c3c; }
+    .word i { color: #2b579a; }
+    .excel i { color: #217346; }
+    .ppt i { color: #d24726; }
+    .image i { color: #f39c12; }
+    .text i { color: #555; }
+    .other i { color: #0078d4; }
   </style>
 </head>
+
 <body>
   <header>
-    <h1>My Shared Files</h1>
-    <p>Hosted on <strong>GitHub Pages</strong> – <a href="https://github.com/chanderGitHub/my-files" target="_blank" style="color:white; text-decoration:underline;">View Repository</a></p>
+    <h1>📂 My Files</h1>
+    <div class="controls">
+      <input type="text" id="searchInput" placeholder="Search files...">
+      <select id="filterType">
+        <option value="all">All Types</option>
+        <option value="pdf">PDF</option>
+        <option value="word">Word</option>
+        <option value="excel">Excel</option>
+        <option value="ppt">PowerPoint</option>
+        <option value="image">Images</option>
+        <option value="text">Text</option>
+      </select>
+    </div>
   </header>
 
-  <div class="toolbar">
-    <input type="text" id="searchBox" placeholder="🔍 Search files or folders..." />
-    <select id="sortOption">
-      <option value="name">Sort by Name</option>
-      <option value="size">Sort by Size</option>
-      <option value="date">Sort by Date</option>
-    </select>
+  <div class="file-container" id="fileContainer">
+    <p style="text-align:center;">Loading files from repository...</p>
   </div>
 
-  <ul id="file-list">
-    <li>Loading files...</li>
-  </ul>
+  <footer>
+    © 2025 Chander GitHub | All Rights Reserved
+  </footer>
 
   <script>
-    const username = "chanderGitHub";
-    const repo = "my-files";
+    const repoOwner = "chanderGitHub";
+    const repoName = "my-files";
     const branch = "main";
-    const apiBase = `https://api.github.com/repos/${username}/${repo}/contents/`;
-
+    const downloadsEnabled = true; // set false to disable downloads
+    const fileContainer = document.getElementById("fileContainer");
+    const searchInput = document.getElementById("searchInput");
+    const filterType = document.getElementById("filterType");
     let allFiles = [];
 
-    function getFileIcon(fileName) {
-      if (fileName.match(/\.(doc|docx)$/i)) return '<i class="fa-solid fa-file-word" style="color:#2B579A;"></i>';
-      if (fileName.match(/\.(xls|xlsx)$/i)) return '<i class="fa-solid fa-file-excel" style="color:#217346;"></i>';
-      if (fileName.match(/\.(ppt|pptx)$/i)) return '<i class="fa-solid fa-file-powerpoint" style="color:#D24726;"></i>';
-      if (fileName.match(/\.(pdf)$/i)) return '<i class="fa-solid fa-file-pdf" style="color:#B30B00;"></i>';
-      if (fileName.match(/\.(txt|csv)$/i)) return '<i class="fa-solid fa-file-lines" style="color:#555;"></i>';
-      if (fileName.match(/\.(jpg|jpeg|png|gif|bmp)$/i)) return '<i class="fa-solid fa-file-image" style="color:#F4B400;"></i>';
-      return '<i class="fa-solid fa-file" style="color:#777;"></i>';
-    }
-
-    function formatSize(bytes) {
-      if (bytes < 1024) return bytes + " B";
-      let kb = bytes / 1024;
-      if (kb < 1024) return kb.toFixed(1) + " KB";
-      let mb = kb / 1024;
-      return mb.toFixed(1) + " MB";
-    }
-
-    async function getLastModified(path) {
-      const commitApi = `https://api.github.com/repos/${username}/${repo}/commits?path=${path}&page=1&per_page=1`;
+    async function loadFiles() {
       try {
-        const res = await fetch(commitApi);
-        const commits = await res.json();
-        if (commits && commits.length > 0) {
-          return new Date(commits[0].commit.author.date).toLocaleDateString();
-        }
-      } catch {
-        return "—";
-      }
-      return "—";
-    }
-
-    async function loadFolder(path = "") {
-      const url = apiBase + path;
-      const response = await fetch(url);
-      const items = await response.json();
-
-      for (const item of items) {
-        if (item.type === "dir") {
-          await loadFolder(item.path);
-        } else if (item.type === "file") {
-          const modified = await getLastModified(item.path);
-          allFiles.push({
-            name: item.name,
-            path: item.path,
-            size: item.size,
-            modified,
-          });
-        }
+        const res = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/`);
+        if (!res.ok) throw new Error("Error fetching files");
+        allFiles = await res.json();
+        displayFiles(allFiles);
+      } catch (err) {
+        fileContainer.innerHTML = `<p style="text-align:center;color:red;">Error loading files. Check repo name or API limit.</p>`;
       }
     }
 
-    function renderFiles(filter = "", sortBy = "name") {
-      const fileList = document.getElementById("file-list");
-      fileList.innerHTML = "";
+    function displayFiles(files) {
+      fileContainer.innerHTML = "";
+      files.filter(f => f.type === "file").forEach(file => {
+        const ext = file.name.split('.').pop().toLowerCase();
+        let type = "other", icon = "bxs-file";
+        if (ext === "pdf") { type = "pdf"; icon = "bxs-file-pdf"; }
+        else if (["doc", "docx"].includes(ext)) { type = "word"; icon = "bxs-file-doc"; }
+        else if (["xls", "xlsx"].includes(ext)) { type = "excel"; }
+        else if (["ppt", "pptx"].includes(ext)) { type = "ppt"; }
+        else if (["jpg", "jpeg", "png", "gif"].includes(ext)) { type = "image"; icon = "bxs-file-image"; }
+        else if (["txt", "log"].includes(ext)) { type = "text"; icon = "bxs-file-txt"; }
 
-      let filtered = allFiles.filter(f =>
-        f.name.toLowerCase().includes(filter.toLowerCase())
-      );
-
-      filtered.sort((a, b) => {
-        if (sortBy === "name") return a.name.localeCompare(b.name);
-        if (sortBy === "size") return b.size - a.size;
-        if (sortBy === "date") return new Date(b.modified) - new Date(a.modified);
-      });
-
-      for (const f of filtered) {
-        const icon = getFileIcon(f.name);
-        const rawUrl = `https://raw.githubusercontent.com/${username}/${repo}/${branch}/${f.path}`;
-        const gviewUrl = `https://docs.google.com/gview?url=${rawUrl}&embedded=true`;
-
-        const viewLink = f.name.match(/\.(docx|doc|xlsx|xls|ppt|pptx)$/i)
-          ? `<a href="${gviewUrl}" target="_blank">${f.name}</a>`
-          : `<a href="${rawUrl}" target="_blank">${f.name}</a>`;
-
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <div class="left">
-            ${icon}
-            ${viewLink}
-          </div>
-          <div class="right">
-            <span class="meta">${formatSize(f.size)} • ${f.modified}</span>
-            <a href="${rawUrl}" download class="download" title="Download"><i class="fa-solid fa-download"></i></a>
+        const url = `https://${repoOwner}.github.io/${repoName}/${file.name}`;
+        const card = document.createElement("div");
+        card.className = `file-card ${type}`;
+        card.setAttribute("data-name", file.name.toLowerCase());
+        card.setAttribute("data-type", type);
+        card.innerHTML = `
+          <i class='bx ${icon}'></i>
+          <a href="${url}" target="_blank">${file.name}</a>
+          <div class="buttons">
+            <button onclick="window.open('${url}','_blank')">Open</button>
+            <button class="download-btn" data-file="${url}">Download</button>
           </div>
         `;
-        fileList.appendChild(li);
-      }
+        fileContainer.appendChild(card);
+      });
 
-      if (filtered.length === 0) {
-        fileList.innerHTML = "<li>No matching files found.</li>";
+      if (!downloadsEnabled) {
+        document.querySelectorAll(".download-btn").forEach(btn => {
+          btn.disabled = true;
+          btn.style.opacity = "0.5";
+          btn.style.cursor = "not-allowed";
+          btn.title = "Download disabled";
+        });
+      } else {
+        document.querySelectorAll(".download-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const link = document.createElement("a");
+            link.href = btn.dataset.file;
+            link.download = "";
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+          });
+        });
       }
     }
 
-    (async function init() {
-      await loadFolder();
-      renderFiles();
+    function filterFiles() {
+      const search = searchInput.value.toLowerCase();
+      const type = filterType.value;
+      const cards = document.querySelectorAll(".file-card");
 
-      document.getElementById("searchBox").addEventListener("input", (e) => {
-        renderFiles(e.target.value, document.getElementById("sortOption").value);
+      cards.forEach(card => {
+        const nameMatch = card.dataset.name.includes(search);
+        const typeMatch = type === "all" || card.dataset.type === type;
+        card.style.display = nameMatch && typeMatch ? "block" : "none";
       });
+    }
 
-      document.getElementById("sortOption").addEventListener("change", (e) => {
-        renderFiles(document.getElementById("searchBox").value, e.target.value);
-      });
-    })();
+    searchInput.addEventListener("input", filterFiles);
+    filterType.addEventListener("change", filterFiles);
+    loadFiles();
   </script>
 </body>
 </html>
