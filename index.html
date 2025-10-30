@@ -11,7 +11,7 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
 
   <style>
-    /* 🌄 Default Background */
+    /* 🌄 Background & base styling */
     body {
       font-family: 'Inter', sans-serif;
       background: url('https://images.unsplash.com/photo-1522199710521-72d69614c702?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
@@ -21,7 +21,7 @@
       transition: color 0.4s ease, background-color 0.4s ease;
     }
 
-    /* Overlay */
+    /* Overlay for readability */
     body::before {
       content: "";
       position: fixed;
@@ -50,7 +50,7 @@
       color: #2c3e50;
     }
 
-    /* Theme Toggle */
+    /* Theme toggle button */
     #themeToggle {
       position: absolute;
       top: 20px;
@@ -68,7 +68,6 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
       transition: background 0.3s;
     }
-
     #themeToggle:hover {
       background: rgba(255,255,255,0.9);
     }
@@ -81,7 +80,6 @@
       gap: 10px;
       margin-top: 10px;
     }
-
     input[type="text"], select {
       padding: 10px;
       border-radius: 8px;
@@ -92,7 +90,7 @@
       backdrop-filter: blur(6px);
     }
 
-    /* File Grid */
+    /* File grid */
     .file-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -109,7 +107,6 @@
       transition: transform 0.2s, box-shadow 0.3s, background 0.5s;
       backdrop-filter: blur(8px);
     }
-
     .file-card:hover {
       transform: translateY(-6px);
       box-shadow: 0 10px 20px rgba(0,0,0,0.15);
@@ -135,7 +132,6 @@
       gap: 10px;
       margin-top: 10px;
     }
-
     button.action {
       background-color: #0078d4;
       color: white;
@@ -146,7 +142,6 @@
       transition: background 0.3s;
       font-size: 0.9rem;
     }
-
     button.action:hover {
       background-color: #005fa3;
     }
@@ -171,29 +166,13 @@
     .other i { color: #0078d4; }
 
     /* 🌙 Night Mode */
-    body.night {
-      color: #eaeaea;
-    }
-    body.night::before {
-      background: rgba(0, 0, 0, 0.65);
-    }
-    body.night header {
-      background-color: rgba(0, 0, 0, 0.6);
-    }
-    body.night footer {
-      background-color: rgba(0, 0, 0, 0.5);
-      color: #ccc;
-    }
-    body.night .file-card {
-      background: rgba(0, 0, 0, 0.6);
-    }
-    body.night .file-card a {
-      color: #f1f1f1;
-    }
-    body.night #themeToggle {
-      background: rgba(0,0,0,0.6);
-      color: #fff;
-    }
+    body.night { color: #eaeaea; }
+    body.night::before { background: rgba(0, 0, 0, 0.65); }
+    body.night header { background-color: rgba(0, 0, 0, 0.6); }
+    body.night footer { background-color: rgba(0, 0, 0, 0.5); color: #ccc; }
+    body.night .file-card { background: rgba(0, 0, 0, 0.6); }
+    body.night .file-card a { color: #f1f1f1; }
+    body.night #themeToggle { background: rgba(0,0,0,0.6); color: #fff; }
   </style>
 </head>
 
@@ -226,30 +205,31 @@
   <script>
     const repoOwner = "chanderGitHub";
     const repoName = "my-files";
-    const downloadsEnabled = true; // set to false to disable downloads
+    const downloadsEnabled = true; // set to false to disable download buttons
     const fileContainer = document.getElementById("fileContainer");
     const searchInput = document.getElementById("searchInput");
     const filterType = document.getElementById("filterType");
     const themeToggle = document.getElementById("themeToggle");
-
     let allFiles = [];
 
-    // Load files from GitHub
+    // Load all files (including subfolders)
     async function loadFiles() {
       try {
-        const res = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/`);
-        if (!res.ok) throw new Error("Error fetching files");
-        allFiles = await res.json();
+        const res = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/main?recursive=1`);
+        if (!res.ok) throw new Error("Error fetching file tree");
+        const data = await res.json();
+        allFiles = data.tree.filter(item => item.type === "blob");
         displayFiles(allFiles);
       } catch (err) {
+        console.error(err);
         fileContainer.innerHTML = `<p style="text-align:center;color:red;">Error loading files. Check repo or API limit.</p>`;
       }
     }
 
     function displayFiles(files) {
       fileContainer.innerHTML = "";
-      files.filter(f => f.type === "file").forEach(file => {
-        const ext = file.name.split('.').pop().toLowerCase();
+      files.forEach(file => {
+        const ext = file.path.split('.').pop().toLowerCase();
         let type = "other", icon = "bxs-file";
         if (ext === "pdf") type = "pdf", icon = "bxs-file-pdf";
         else if (["doc", "docx"].includes(ext)) type = "word", icon = "bxs-file-doc";
@@ -258,14 +238,15 @@
         else if (["jpg", "jpeg", "png", "gif"].includes(ext)) type = "image", icon = "bxs-file-image";
         else if (["txt", "log"].includes(ext)) type = "text", icon = "bxs-file-txt";
 
-        const url = `https://${repoOwner}.github.io/${repoName}/${file.name}`;
+        const url = `https://${repoOwner}.github.io/${repoName}/${file.path}`;
         const card = document.createElement("div");
         card.className = `file-card ${type}`;
-        card.dataset.name = file.name.toLowerCase();
+        card.dataset.name = file.path.toLowerCase();
         card.dataset.type = type;
+
         card.innerHTML = `
           <i class='bx ${icon}'></i>
-          <a href="${url}" target="_blank">${file.name}</a>
+          <a href="${url}" target="_blank">${file.path}</a>
           <div class="buttons">
             <button class="action" onclick="window.open('${url}','_blank')">Open</button>
             <button class="action download-btn" data-file="${url}">Download</button>
@@ -309,7 +290,7 @@
     filterType.addEventListener("change", filterFiles);
     loadFiles();
 
-    // 🌙 Theme logic
+    // 🌗 Theme logic (auto + toggle)
     function setTheme(mode) {
       if (mode === "night") {
         document.body.classList.add("night");
@@ -321,7 +302,6 @@
       localStorage.setItem("theme", mode);
     }
 
-    // Auto detect or use saved preference
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
       setTheme(savedTheme);
