@@ -7,42 +7,41 @@
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-
   <!-- Boxicons for icons -->
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
 
   <style>
-    /* 🌄 Background image + overlay */
+    /* 🌄 Default Background */
     body {
       font-family: 'Inter', sans-serif;
       background: url('https://images.unsplash.com/photo-1522199710521-72d69614c702?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
       background-size: cover;
       margin: 0;
-      padding: 0;
       color: #333;
-      position: relative;
-      overflow-x: hidden;
+      transition: color 0.4s ease, background-color 0.4s ease;
     }
 
-    /* 🩵 Translucent overlay for readability */
+    /* Overlay */
     body::before {
       content: "";
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: rgba(255, 255, 255, 0.65);
       z-index: -1;
+      transition: background 0.6s ease;
     }
 
+    /* Header */
     header {
       text-align: center;
-      padding: 30px 20px;
+      padding: 30px 20px 20px;
       background-color: rgba(255, 255, 255, 0.8);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       border-radius: 0 0 20px 20px;
+      position: relative;
       backdrop-filter: blur(8px);
+      transition: background-color 0.6s ease;
     }
 
     header h1 {
@@ -51,12 +50,36 @@
       color: #2c3e50;
     }
 
+    /* Theme Toggle */
+    #themeToggle {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      background: rgba(255,255,255,0.7);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transition: background 0.3s;
+    }
+
+    #themeToggle:hover {
+      background: rgba(255,255,255,0.9);
+    }
+
+    /* Controls */
     .controls {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 10px;
-      padding: 10px 20px;
+      margin-top: 10px;
     }
 
     input[type="text"], select {
@@ -65,10 +88,11 @@
       border: 1px solid #ccc;
       font-size: 1rem;
       width: 250px;
-      background-color: rgba(255, 255, 255, 0.8);
+      background-color: rgba(255,255,255,0.8);
       backdrop-filter: blur(6px);
     }
 
+    /* File Grid */
     .file-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -77,18 +101,18 @@
     }
 
     .file-card {
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255,255,255,0.85);
       border-radius: 16px;
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.1);
       text-align: center;
       padding: 25px;
-      transition: transform 0.2s, box-shadow 0.3s;
+      transition: transform 0.2s, box-shadow 0.3s, background 0.5s;
       backdrop-filter: blur(8px);
     }
 
     .file-card:hover {
       transform: translateY(-6px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
     }
 
     .file-card i {
@@ -112,7 +136,7 @@
       margin-top: 10px;
     }
 
-    button {
+    button.action {
       background-color: #0078d4;
       color: white;
       border: none;
@@ -123,7 +147,7 @@
       font-size: 0.9rem;
     }
 
-    button:hover {
+    button.action:hover {
       background-color: #005fa3;
     }
 
@@ -134,6 +158,7 @@
       color: #555;
       background-color: rgba(255, 255, 255, 0.6);
       backdrop-filter: blur(6px);
+      transition: background-color 0.6s ease, color 0.5s ease;
     }
 
     /* File type colors */
@@ -144,12 +169,38 @@
     .image i { color: #f39c12; }
     .text i { color: #555; }
     .other i { color: #0078d4; }
+
+    /* 🌙 Night Mode */
+    body.night {
+      color: #eaeaea;
+    }
+    body.night::before {
+      background: rgba(0, 0, 0, 0.65);
+    }
+    body.night header {
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+    body.night footer {
+      background-color: rgba(0, 0, 0, 0.5);
+      color: #ccc;
+    }
+    body.night .file-card {
+      background: rgba(0, 0, 0, 0.6);
+    }
+    body.night .file-card a {
+      color: #f1f1f1;
+    }
+    body.night #themeToggle {
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+    }
   </style>
 </head>
 
 <body>
   <header>
     <h1>📂 My Files</h1>
+    <button id="themeToggle" title="Toggle theme"><i class='bx bx-moon'></i></button>
     <div class="controls">
       <input type="text" id="searchInput" placeholder="Search files...">
       <select id="filterType">
@@ -175,13 +226,15 @@
   <script>
     const repoOwner = "chanderGitHub";
     const repoName = "my-files";
-    const branch = "main";
-    const downloadsEnabled = true; // set false to disable downloads
+    const downloadsEnabled = true; // set to false to disable downloads
     const fileContainer = document.getElementById("fileContainer");
     const searchInput = document.getElementById("searchInput");
     const filterType = document.getElementById("filterType");
+    const themeToggle = document.getElementById("themeToggle");
+
     let allFiles = [];
 
+    // Load files from GitHub
     async function loadFiles() {
       try {
         const res = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/`);
@@ -189,7 +242,7 @@
         allFiles = await res.json();
         displayFiles(allFiles);
       } catch (err) {
-        fileContainer.innerHTML = `<p style="text-align:center;color:red;">Error loading files. Check repo name or API limit.</p>`;
+        fileContainer.innerHTML = `<p style="text-align:center;color:red;">Error loading files. Check repo or API limit.</p>`;
       }
     }
 
@@ -198,24 +251,24 @@
       files.filter(f => f.type === "file").forEach(file => {
         const ext = file.name.split('.').pop().toLowerCase();
         let type = "other", icon = "bxs-file";
-        if (ext === "pdf") { type = "pdf"; icon = "bxs-file-pdf"; }
-        else if (["doc", "docx"].includes(ext)) { type = "word"; icon = "bxs-file-doc"; }
-        else if (["xls", "xlsx"].includes(ext)) { type = "excel"; }
-        else if (["ppt", "pptx"].includes(ext)) { type = "ppt"; }
-        else if (["jpg", "jpeg", "png", "gif"].includes(ext)) { type = "image"; icon = "bxs-file-image"; }
-        else if (["txt", "log"].includes(ext)) { type = "text"; icon = "bxs-file-txt"; }
+        if (ext === "pdf") type = "pdf", icon = "bxs-file-pdf";
+        else if (["doc", "docx"].includes(ext)) type = "word", icon = "bxs-file-doc";
+        else if (["xls", "xlsx"].includes(ext)) type = "excel";
+        else if (["ppt", "pptx"].includes(ext)) type = "ppt";
+        else if (["jpg", "jpeg", "png", "gif"].includes(ext)) type = "image", icon = "bxs-file-image";
+        else if (["txt", "log"].includes(ext)) type = "text", icon = "bxs-file-txt";
 
         const url = `https://${repoOwner}.github.io/${repoName}/${file.name}`;
         const card = document.createElement("div");
         card.className = `file-card ${type}`;
-        card.setAttribute("data-name", file.name.toLowerCase());
-        card.setAttribute("data-type", type);
+        card.dataset.name = file.name.toLowerCase();
+        card.dataset.type = type;
         card.innerHTML = `
           <i class='bx ${icon}'></i>
           <a href="${url}" target="_blank">${file.name}</a>
           <div class="buttons">
-            <button onclick="window.open('${url}','_blank')">Open</button>
-            <button class="download-btn" data-file="${url}">Download</button>
+            <button class="action" onclick="window.open('${url}','_blank')">Open</button>
+            <button class="action download-btn" data-file="${url}">Download</button>
           </div>
         `;
         fileContainer.appendChild(card);
@@ -245,9 +298,7 @@
     function filterFiles() {
       const search = searchInput.value.toLowerCase();
       const type = filterType.value;
-      const cards = document.querySelectorAll(".file-card");
-
-      cards.forEach(card => {
+      document.querySelectorAll(".file-card").forEach(card => {
         const nameMatch = card.dataset.name.includes(search);
         const typeMatch = type === "all" || card.dataset.type === type;
         card.style.display = nameMatch && typeMatch ? "block" : "none";
@@ -257,6 +308,32 @@
     searchInput.addEventListener("input", filterFiles);
     filterType.addEventListener("change", filterFiles);
     loadFiles();
+
+    // 🌙 Theme logic
+    function setTheme(mode) {
+      if (mode === "night") {
+        document.body.classList.add("night");
+        themeToggle.innerHTML = "<i class='bx bx-sun'></i>";
+      } else {
+        document.body.classList.remove("night");
+        themeToggle.innerHTML = "<i class='bx bx-moon'></i>";
+      }
+      localStorage.setItem("theme", mode);
+    }
+
+    // Auto detect or use saved preference
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else {
+      const hour = new Date().getHours();
+      setTheme(hour >= 18 || hour < 6 ? "night" : "day");
+    }
+
+    themeToggle.addEventListener("click", () => {
+      const current = document.body.classList.contains("night") ? "night" : "day";
+      setTheme(current === "night" ? "day" : "night");
+    });
   </script>
 </body>
 </html>
