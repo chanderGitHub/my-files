@@ -12,20 +12,37 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
 
   <style>
+    /* 🌄 Background image + overlay */
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(to right, #eef2f3, #8e9eab);
+      background: url('https://images.unsplash.com/photo-1522199710521-72d69614c702?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+      background-size: cover;
       margin: 0;
       padding: 0;
       color: #333;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 🩵 Translucent overlay for readability */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.65);
+      z-index: -1;
     }
 
     header {
       text-align: center;
       padding: 30px 20px;
-      background-color: #ffffffcc;
+      background-color: rgba(255, 255, 255, 0.8);
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       border-radius: 0 0 20px 20px;
+      backdrop-filter: blur(8px);
     }
 
     header h1 {
@@ -48,6 +65,8 @@
       border: 1px solid #ccc;
       font-size: 1rem;
       width: 250px;
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(6px);
     }
 
     .file-container {
@@ -58,12 +77,13 @@
     }
 
     .file-card {
-      background: #fff;
+      background: rgba(255, 255, 255, 0.85);
       border-radius: 16px;
       box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
       text-align: center;
       padding: 25px;
       transition: transform 0.2s, box-shadow 0.3s;
+      backdrop-filter: blur(8px);
     }
 
     .file-card:hover {
@@ -111,10 +131,12 @@
       text-align: center;
       padding: 20px;
       font-size: 0.9rem;
-      color: #777;
+      color: #555;
+      background-color: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(6px);
     }
 
-    /* Icons colors */
+    /* File type colors */
     .pdf i { color: #e74c3c; }
     .word i { color: #2b579a; }
     .excel i { color: #217346; }
