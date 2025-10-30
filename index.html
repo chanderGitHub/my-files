@@ -1,68 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Shared Files</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Files - chanderGitHub</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f8fafc;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7fa;
+      margin: 0;
+      padding: 0;
       color: #333;
-      margin: 40px;
     }
-    h1 {
-      color: #0066cc;
-      margin-bottom: 25px;
+
+    header {
+      background: linear-gradient(135deg, #0078d7, #00a1ff);
+      color: white;
+      padding: 20px 40px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0.5px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      background-color: #fff;
+      padding: 10px 20px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    input[type="text"] {
+      width: 260px;
+      padding: 8px 12px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      outline: none;
+      font-size: 15px;
+    }
+
+    select {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+
     ul {
       list-style-type: none;
-      padding-left: 20px;
+      margin: 0;
+      padding: 20px 40px;
     }
+
     li {
-      margin: 8px 0;
-      font-size: 16px;
+      background: #fff;
+      border-radius: 12px;
+      margin: 10px 0;
+      padding: 12px 18px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
     }
-    a {
-      text-decoration: none;
-      color: #0078d7;
+
+    li:hover {
+      transform: scale(1.01);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     }
-    a:hover {
-      text-decoration: underline;
+
+    .left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
-    i {
-      margin-right: 8px;
+
+    .left i {
+      font-size: 20px;
+      width: 24px;
+      text-align: center;
     }
-    .folder {
-      font-weight: bold;
-      color: #222;
-    }
+
     .meta {
       color: gray;
       font-size: 13px;
-      margin-left: 8px;
     }
-    .loading {
-      color: gray;
-      font-style: italic;
+
+    .download {
+      font-size: 18px;
+      text-decoration: none;
+      color: #0078d7;
+      margin-left: 10px;
+    }
+
+    .download:hover {
+      color: #004a99;
+    }
+
+    @media (max-width: 600px) {
+      ul {
+        padding: 10px 20px;
+      }
+      li {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .meta {
+        margin-top: 6px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>My Shared Files</h1>
+  <header>
+    <h1>My Shared Files</h1>
+    <p>Hosted on <strong>GitHub Pages</strong> – <a href="https://github.com/chanderGitHub/my-files" target="_blank" style="color:white; text-decoration:underline;">View Repository</a></p>
+  </header>
+
+  <div class="toolbar">
+    <input type="text" id="searchBox" placeholder="🔍 Search files or folders..." />
+    <select id="sortOption">
+      <option value="name">Sort by Name</option>
+      <option value="size">Sort by Size</option>
+      <option value="date">Sort by Date</option>
+    </select>
+  </div>
+
   <ul id="file-list">
-    <li class="loading">Loading files from repository...</li>
+    <li>Loading files...</li>
   </ul>
 
   <script>
-    // Your GitHub username and repository name
     const username = "chanderGitHub";
     const repo = "my-files";
     const branch = "main";
     const apiBase = `https://api.github.com/repos/${username}/${repo}/contents/`;
 
-    // Get file icon based on extension
+    let allFiles = [];
+
     function getFileIcon(fileName) {
       if (fileName.match(/\.(doc|docx)$/i)) return '<i class="fa-solid fa-file-word" style="color:#2B579A;"></i>';
       if (fileName.match(/\.(xls|xlsx)$/i)) return '<i class="fa-solid fa-file-excel" style="color:#217346;"></i>';
@@ -73,7 +156,6 @@
       return '<i class="fa-solid fa-file" style="color:#777;"></i>';
     }
 
-    // Format bytes to readable units
     function formatSize(bytes) {
       if (bytes < 1024) return bytes + " B";
       let kb = bytes / 1024;
@@ -82,7 +164,6 @@
       return mb.toFixed(1) + " MB";
     }
 
-    // Get last modified date via GitHub commits API
     async function getLastModified(path) {
       const commitApi = `https://api.github.com/repos/${username}/${repo}/commits?path=${path}&page=1&per_page=1`;
       try {
@@ -91,64 +172,85 @@
         if (commits && commits.length > 0) {
           return new Date(commits[0].commit.author.date).toLocaleDateString();
         }
-      } catch (e) {
-        console.warn("Error fetching commit info:", e);
+      } catch {
+        return "—";
       }
       return "—";
     }
 
-    // Recursive folder loader
-    async function loadFolder(path = "", parentElement) {
+    async function loadFolder(path = "") {
       const url = apiBase + path;
       const response = await fetch(url);
       const items = await response.json();
 
-      // Sort: folders first
-      items.sort((a, b) => a.type.localeCompare(b.type));
-
       for (const item of items) {
-        const listItem = document.createElement('li');
-
         if (item.type === "dir") {
-          listItem.innerHTML = `<i class="fa-solid fa-folder" style="color:#f4b400;"></i> <span class="folder">${item.name}</span>`;
-          const sublist = document.createElement('ul');
-          listItem.appendChild(sublist);
-          parentElement.appendChild(listItem);
-          await loadFolder(item.path, sublist);
+          await loadFolder(item.path);
         } else if (item.type === "file") {
-          const fileName = item.name;
-          const rawUrl = `https://raw.githubusercontent.com/${username}/${repo}/${branch}/${item.path}`;
-          const gviewUrl = `https://docs.google.com/gview?url=${rawUrl}&embedded=true`;
-
-          let viewLink;
-          if (fileName.match(/\.(docx|doc|xlsx|xls|ppt|pptx)$/i)) {
-            viewLink = `<a href="${gviewUrl}" target="_blank">${fileName}</a>`;
-          } else {
-            viewLink = `<a href="${rawUrl}" target="_blank">${fileName}</a>`;
-          }
-
-          const icon = getFileIcon(fileName);
-          const downloadLink = `<a href="${rawUrl}" download title="Download file">⬇️</a>`;
-          const size = formatSize(item.size);
-          const date = await getLastModified(item.path);
-
-          listItem.innerHTML = `${icon} ${viewLink} &nbsp;${downloadLink}
-            <span class="meta">(${size}, modified: ${date})</span>`;
-          parentElement.appendChild(listItem);
+          const modified = await getLastModified(item.path);
+          allFiles.push({
+            name: item.name,
+            path: item.path,
+            size: item.size,
+            modified,
+          });
         }
       }
     }
 
-    // Initialize listing
-    (async function init() {
-      const fileList = document.getElementById('file-list');
-      fileList.innerHTML = '';
-      try {
-        await loadFolder("", fileList);
-      } catch (err) {
-        console.error(err);
-        fileList.innerHTML = `<li style="color:red;">⚠️ Error loading files. Check repository or API limit.</li>`;
+    function renderFiles(filter = "", sortBy = "name") {
+      const fileList = document.getElementById("file-list");
+      fileList.innerHTML = "";
+
+      let filtered = allFiles.filter(f =>
+        f.name.toLowerCase().includes(filter.toLowerCase())
+      );
+
+      filtered.sort((a, b) => {
+        if (sortBy === "name") return a.name.localeCompare(b.name);
+        if (sortBy === "size") return b.size - a.size;
+        if (sortBy === "date") return new Date(b.modified) - new Date(a.modified);
+      });
+
+      for (const f of filtered) {
+        const icon = getFileIcon(f.name);
+        const rawUrl = `https://raw.githubusercontent.com/${username}/${repo}/${branch}/${f.path}`;
+        const gviewUrl = `https://docs.google.com/gview?url=${rawUrl}&embedded=true`;
+
+        const viewLink = f.name.match(/\.(docx|doc|xlsx|xls|ppt|pptx)$/i)
+          ? `<a href="${gviewUrl}" target="_blank">${f.name}</a>`
+          : `<a href="${rawUrl}" target="_blank">${f.name}</a>`;
+
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <div class="left">
+            ${icon}
+            ${viewLink}
+          </div>
+          <div class="right">
+            <span class="meta">${formatSize(f.size)} • ${f.modified}</span>
+            <a href="${rawUrl}" download class="download" title="Download"><i class="fa-solid fa-download"></i></a>
+          </div>
+        `;
+        fileList.appendChild(li);
       }
+
+      if (filtered.length === 0) {
+        fileList.innerHTML = "<li>No matching files found.</li>";
+      }
+    }
+
+    (async function init() {
+      await loadFolder();
+      renderFiles();
+
+      document.getElementById("searchBox").addEventListener("input", (e) => {
+        renderFiles(e.target.value, document.getElementById("sortOption").value);
+      });
+
+      document.getElementById("sortOption").addEventListener("change", (e) => {
+        renderFiles(document.getElementById("searchBox").value, e.target.value);
+      });
     })();
   </script>
 </body>
